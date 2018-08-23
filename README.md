@@ -5,7 +5,7 @@ Usage: python flashbackup.py [fromdir1 fromdir2 ...] todir
 NOTE: Do not use ../ before your from paths.
 
 Example: Need to backup /test and /home/myuser directory.  Flash drive is mounted at /media/flash
-
+<pre>
 /test/dir1/
             test1.log
             test2.log
@@ -27,7 +27,7 @@ The flash drive will have the following files:
             test3.log.bz2
 /media/flash/backup/home/myuser
             user.log.bz2
-
+</pre>
 
 The flash drive will have a backup directory containing the full paths of both the /test and /home/myuser backups.
 All files will be bzip2 and have a bz2 extension.
