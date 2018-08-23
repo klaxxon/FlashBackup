@@ -5,6 +5,8 @@ Usage: python flashbackup.py [fromdir1 fromdir2 ...] todir
 NOTE: Do not use ../ before your from paths.
 
 Example: Need to backup /test and /home/myuser directory.  Flash drive is mounted at /media/flash
+
+Files to backup
 <pre>
 /test/dir1/
             test1.log
@@ -13,11 +15,13 @@ Example: Need to backup /test and /home/myuser directory.  Flash drive is mounte
             test3.log
 /home/myuser
             user.log
-
+</pre>
+Run the command to backup these two diectories to /media/flash
+<pre>
 $ python flashbackup.py /test /home/myuser /media/flash
-
+</pre>
 The flash drive will have the following files:
-
+<pre>
 /media/flash/
             flashbackup.db
 /media/flash/backup/test/dir1/
