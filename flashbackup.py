@@ -44,7 +44,6 @@ def copyfile(fname, toname):
 	sz = st.st_size
 	fsrc = open(fname, "rb")
 	fdst = bz2.BZ2File(toname + ".bz2", "wb", compresslevel=9)
-	#print "File: " + fname
 	hsz = humanize_bytes(st.st_size)
 	sys.stdout.write("%12d / %-12s\r" % (0, hsz))
 	copied = 0
@@ -72,10 +71,10 @@ def copyFile(fromname, todir, c):
 	path = os.path.dirname(fromname)
 	file = os.path.basename(fromname)
 	topath = todir + "/backup/" + path
+	# Create full path if it does not exist
 	if not os.path.exists(topath):
 		#print "Creating path: " + topath
 		os.makedirs(topath)
-	#print "Copyfile from " + fromname + " to " + topath + "/" + file
 	copyfile(fromname, topath + "/" +  file)
 	st = os.stat(fromname)
 	c.execute("UPDATE files SET modified='%d', filesize='%d' WHERE filename='%s'" % (st.st_mtime, st.st_size, fromname))
@@ -83,28 +82,26 @@ def copyFile(fromname, todir, c):
 
 def dobackup(dirfrom, dirto, db):
 	global filecount, copycount
+	# Walk through directories
 	for dirName, subdirList, fileList in os.walk(dirfrom):
-		#print("dirName=%s, dirfrom=%s" % (dirName, dirfrom))
-		#print("Dir %s" % dirName)
 		for fname in fileList:
 			filecount = filecount + 1
 			fname = dirName + "/" + fname
-			#print("\t%s" % fname)
 			# Does this exist in database?
 			c = db.cursor()
 			c.execute("SELECT modified, filesize FROM files WHERE filename='" + fname + "'")
 			row = c.fetchone()
 			if row == None:
+				# New file
 				c.execute("INSERT INTO files VALUES('" + fname + "','','','%s')" % datetime.datetime.now())
 				copycount = copycount + 1
 				print "New file " + fname
 				copyFile(fname, dirto, c)
 			else:
+				# File exists, get previous modification time and size
 				c.execute("UPDATE files SET lastchecked='%s' WHERE filename='%s'" % (datetime.datetime.now(), fname))
 				st = os.stat(fname)
-				#print "Testing change:"
-				#print st
-				#print row
+				# Did the modification time change or size?
 				if ( ("%d" % st.st_mtime) != row[0]):
 					print "Modified time has changed for " + fname
 					copyFile(fname, dirto, c)
@@ -127,25 +124,27 @@ def main():
 	copycount = 0
 	if len(sys.argv) < 3:
 		usage()
-	print "Fast backup\n"
+	print "Fast flash backup\n"
 	dirto = sys.argv[len(sys.argv) - 1]
 	db = sqlite3.connect(dirto + "/flashbackup.db")
 	db.execute("CREATE TABLE IF NOT EXISTS files (filename text NOT NULL PRIMARY KEY, modified text, filesize text, lastchecked text)")
 	db.commit()
+	# We do this so we can detect deleted files.  Updated/tested files will set this to the current timestamp
 	db.execute("UPDATE files SET lastchecked=null");
 	db.commit()
 	for i in range(1, len(sys.argv) - 1):
 		dirfrom = sys.argv[i]
 		dobackup(dirfrom, dirto, db)
+	# Now let's check for the deleted files
 	removecount = 0
 	c = db.cursor()
-	c2 = db.cursor()
 	c.execute("SELECT filename FROM files WHERE lastchecked IS NULL")
 	for row in c:
 		rf = dirto + "/backup/" + row[0] + ".bz2"
 		print "Removing file %s.bz2" % row[0]
 		os.remove(rf)
 		removecount = removecount + 1
+	# Cleanup
 	c.execute("DELETE FROM files WHERE lastchecked IS NULL")
 	db.commit()
 	db.close()
