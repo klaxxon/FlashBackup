@@ -46,7 +46,7 @@ def copyfile(fname, toname):
 	fdst = bz2.BZ2File(toname + ".bz2", "wb", compresslevel=9)
 	#print "File: " + fname
 	hsz = humanize_bytes(st.st_size)
-	sys.stdout.write("%10d / %-10s\r" % (0, hsz))
+	sys.stdout.write("%12d / %-12s\r" % (0, hsz))
 	copied = 0
 	while True:
 		buf = fsrc.read(65536)
@@ -55,7 +55,7 @@ def copyfile(fname, toname):
 		fdst.write(buf)
 		copied += len(buf)
 		perc = 100 * copied / st.st_size
-		sys.stdout.write("%10s / %-10s : " % (humanize_bytes(copied), hsz))
+		sys.stdout.write("%12s / %-12s : " % (humanize_bytes(copied), hsz))
 		i = 0
 		while (i < perc):
 			sys.stdout.write("*")
