@@ -1,7 +1,7 @@
 # FlashBackup
 Simple python script to efficiently copy files to USB flash drives and maintain.  A Sqlite3 database is maintained on the USB drive that contains all of the modification times and sizes so they can be compared on subsequent runs.
 
-Usage: python flashbackup.py [fromdir1 fromdir2 ...] todir
+Usage: python flashbackup.py [fromdir1 fromdir2 ...] todir<br/>
 NOTE: Do not use ../ before your from paths.
 
 Example: Need to backup /test and /home/myuser directory.  Flash drive is mounted at /media/flash
