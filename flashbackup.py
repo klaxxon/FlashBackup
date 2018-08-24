@@ -95,7 +95,7 @@ def dobackup(dirfrom, dirto, db):
 		for fname in fileList:
 			filecount = filecount + 1
 			fname = dirName + "/" + fname
-                        sys.stdout.write("%d / %d %0.1f%%\r" % (filecount, filetotal, 100.0*filecount / filetotal))
+                        sys.stdout.write("Checking file %d / %d %0.1f%%\r" % (filecount, filetotal, 100.0*filecount / filetotal))
                         sys.stdout.flush()
 			# Does this exist in database?
 			c = db.cursor()
