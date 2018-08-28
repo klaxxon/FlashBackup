@@ -1,6 +1,6 @@
 # FlashBackup
 
-This is my attempt to lear python and hopefully solve a problem.  I wanted something that would test the modification time and size of files (and possible a hash) on my backup flash drive against what was to be backed up.  Problem is, I do not want to read/scan the entire flash drive because it is slow, so I want to store all of the relevent data somewhere that can be accessed fast.  Soooooo....
+This is my attempt to learn python and hopefully solve a problem.  I wanted something that would test the modification time and size of files (and possible a hash) on my backup flash drive against what was to be backed up.  Problem is, I do not want to read/scan the entire flash drive because it is slow, so I want to store all of the relevent data somewhere that can be accessed fast.  Soooooo....
 
 Simple python script to efficiently copy files to USB flash drives and maintain.  A Sqlite3 database is maintained on the USB drive that contains all of the modification times and sizes so they can be compared on subsequent runs.
 
